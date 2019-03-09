@@ -51,6 +51,11 @@ public class Application implements CommandLineRunner {
 		consolidado = Util.getTDC(block1, consolidado);
 		block1 = Util.getBlock(block, 5);
 		consolidado = Util.getPrestamos(block1, consolidado);
+		block1 = Util.getBlock(block, 6);
+		consolidado = Util.getTotales(block1, consolidado);
+
+		block1 = Util.getBlock(block, 7);
+		consolidado = Util.getTipoDeCambio(block1,consolidado);
 		 System.out.println(Util.convertToJson(consolidado));
 
 	}

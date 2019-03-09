@@ -16,6 +16,9 @@ data class Consolidado(var creationDate: LocalDateTime=LocalDateTime.MIN
                        , var listaDePrestamos: MutableList<Prestamo> = mutableListOf<Prestamo>()
                         ,var totalPrestamo:Double = 0.0){
 
+    var listaTotales: MutableList<Totales> = mutableListOf<Totales>()
+    var exchange: CurrencyExchange = CurrencyExchange()
+
     fun addCuentas(cuenta:Cuenta){
         listaDeCuentas.add(cuenta)
     }
@@ -26,11 +29,46 @@ data class Consolidado(var creationDate: LocalDateTime=LocalDateTime.MIN
     fun addPrestamo(prestamo:Prestamo){
         listaDePrestamos.add(prestamo)
     }
+
+    fun addTotales(total:Totales){
+        listaTotales.add(total)
+    }
+
 }
 
 data class Cuenta(val codigo:String, val saldo:Double)
 data class TDC(var nombre:String, var numero:String, var currency:String, var saldo:Double)
 data class Prestamo(var nombre:String, var numero:String, var currency:String, var saldo:Double)
+data class Totales(var nombre:String, var currency:String, var saldo:Double)
+data class CurrencyExchange(var pais:String="", var currency:String="", var compra:Double=0.0, var venta:Double=0.0)
+
+fun getTipoDeCambio(BlockList:List<String>, consolidado:Consolidado): Consolidado{
+    BlockList.dropWhile { !it.contains("""Cambio USD""".toRegex()) }
+            .filter { !it.contains("""-""".toRegex()) }
+            .map { it.replace("|", "") }
+            .filter { it.startsWith("CR") }
+            .map { it.replace("""\s+""".toRegex(), " ") }
+            .forEach {
+                val split = it.split(" ")
+                consolidado.exchange = CurrencyExchange(split.get(0),split.get(1),split.get(2).toDouble(),split.get(3).toDouble())
+
+            }
+
+    return consolidado
+}
+
+fun getTotales(BlockList:List<String>, consolidado:Consolidado): Consolidado{
+    BlockList
+            .map { it.replace(",", "") }
+            .map { it.replace("""\s+""".toRegex(), " ") }
+            .forEach {
+                val split = it.split(" ")
+                 val total = Totales(split.get(1),split.get(2),split.get(3).toDouble())
+                consolidado.addTotales(total)
+            }
+    return consolidado
+
+}
 
 fun getFileDate(BlockList:List<String>, consolidado:Consolidado): Consolidado{
      BlockList.map { it.substring(0, 19) }

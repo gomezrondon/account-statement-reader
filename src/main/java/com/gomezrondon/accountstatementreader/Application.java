@@ -1,10 +1,12 @@
 package com.gomezrondon.accountstatementreader;
 
 
+import com.gomezrondon.accountstatementreader.repository.CustomerRepository;
 import com.gomezrondon.accountstatementreader.service.Consolidado;
 import com.gomezrondon.accountstatementreader.service.Util;
 import com.gomezrondon.accountstatementreader.service.LoadFileService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -21,6 +23,9 @@ public class Application implements CommandLineRunner {
 
 	private final LoadFileService loadFileService;
 
+	@Autowired
+	private CustomerRepository repository;
+
 	public Application(LoadFileService loadFileService) {
 		this.loadFileService = loadFileService;
 	}
@@ -32,6 +37,8 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		workingDirectory = args.length > 0 ? args[0] : workingDirectory ;
+
+		repository.deleteAll();
 
 		List<Flux<String>> block = loadFileService.readFile(workingDirectory)
 				.skip(1)

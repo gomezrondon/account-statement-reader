@@ -3,18 +3,26 @@
 package com.gomezrondon.accountstatementreader.service
 
 import com.google.gson.GsonBuilder
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import reactor.core.publisher.Flux
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-data class Consolidado(var creationDate: LocalDateTime=LocalDateTime.MIN
+
+@Document(collection = "consolidados")
+data class Consolidado(
+        var creationDate: LocalDateTime=LocalDateTime.MIN
                        , var listaDeCuentas: MutableList<Cuenta> = mutableListOf<Cuenta>()
                         , var totalCuentas:Double = 0.0
                         , var listaDeTDC: MutableList<TDC> = mutableListOf<TDC>()
                        , var totalTDC:Double = 0.0
                        , var listaDePrestamos: MutableList<Prestamo> = mutableListOf<Prestamo>()
                         ,var totalPrestamo:Double = 0.0){
+
+    @Id
+    lateinit var id:String
 
     var listaTotales: MutableList<Totales> = mutableListOf<Totales>()
     var exchange: CurrencyExchange = CurrencyExchange()

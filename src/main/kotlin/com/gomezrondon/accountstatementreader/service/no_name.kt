@@ -1,4 +1,4 @@
-@file:JvmName("Util")
+@file:JvmName("MyUtil")
 
 package com.gomezrondon.accountstatementreader.service
 
@@ -7,14 +7,11 @@ import com.google.gson.GsonBuilder
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
-
 import reactor.core.publisher.Flux
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
 
 
 @Document(collection = "consolidados")

@@ -24,7 +24,7 @@ public class LoadFileServiceImp implements LoadFileService {
     }
 
 
-    private static List<Path> getPathOfFilesInFolder(String folder) throws IOException {
+    public List<Path> getPathOfFilesInFolder(String folder) throws IOException {
 
         try (Stream<Path> paths = Files.walk(Paths.get(folder))) {
             return paths

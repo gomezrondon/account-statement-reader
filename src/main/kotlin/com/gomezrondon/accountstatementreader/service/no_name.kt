@@ -16,15 +16,16 @@ import java.time.format.DateTimeFormatter
 
 @Document(collection = "consolidados")
 data class Consolidado(@Id var id:String = "",
-        @Indexed(unique = true)
+
         var creationDate: LocalDate= LocalDate.now()
-                       ,var strDate:String=""
+                       ,@Indexed(unique = true) var strDate:String=""
                        , var listaDeCuentas: MutableList<Cuenta> = mutableListOf<Cuenta>()
                         , var totalCuentas:Double = 0.0
                         , var listaDeTDC: MutableList<TDC> = mutableListOf<TDC>()
-                       , var totalTDC:Double = 0.0
-                       , var listaDePrestamos: MutableList<Prestamo> = mutableListOf<Prestamo>()
-                        ,var totalPrestamo:Double = 0.0){
+                       ,var totalTDC:Double = 0.0
+                       ,var listaDePrestamos: MutableList<Prestamo> = mutableListOf<Prestamo>()
+                        ,var totalPrestamo:Double = 0.0
+                        ,var fileName:String=""){
 
 
 

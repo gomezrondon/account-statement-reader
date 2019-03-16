@@ -10,6 +10,8 @@ class ProcessService(val loadFileService: LoadFileService, val repository: Custo
 
     fun insertOneElement(workingDirectory: String) {
 
+        convertToUTF8Encoding(workingDirectory)//we convert from ANSI to UTF-8
+
         val block = getBlocsFromFile(workingDirectory)
 
         val consolidado = mapToConsolidadoObject(block)

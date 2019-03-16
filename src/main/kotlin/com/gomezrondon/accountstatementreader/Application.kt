@@ -6,7 +6,9 @@ import com.gomezrondon.accountstatementreader.service.*
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import java.io.IOException
+import java.io.File
+import org.apache.commons.io.FileUtils
+
 
 @SpringBootApplication
 class Application(val process:ProcessService, val repository: CustomerRepository): CommandLineRunner {
@@ -20,9 +22,13 @@ class Application(val process:ProcessService, val repository: CustomerRepository
 			"3" -> repository.deleteAll() // delete
 			"4" -> getMD5HashId(args[1]!!) // date in string format dd/MM/yyyy HH:mm:ss
 			"5" -> process.deleteOneById(args[1]!!) //aa5ff475e0109de3121f0c91c5fa9a4d
+			"6" -> convertToUTF8Encoding(args[1]!!)
 			else -> println("<< No option was selected >>")
 		}
 	}
+
+
+
 }
 
 

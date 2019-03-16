@@ -4,10 +4,12 @@ package com.gomezrondon.accountstatementreader.service
 
 
 import com.google.gson.GsonBuilder
+import org.apache.commons.io.FileUtils
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 import reactor.core.publisher.Flux
+import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.time.LocalDate
@@ -194,4 +196,10 @@ fun convertToJson(objet:Any):String{
 fun String.md5(): String {
     val md = MessageDigest.getInstance("MD5")
     return BigInteger(1, md.digest(this.toByteArray())).toString(16).padStart(32, '0')
+}
+
+fun convertToUTF8Encoding(filename: String){
+    val file = File(filename)
+    val content = FileUtils.readFileToString(file, "ISO8859_1")
+    FileUtils.writeStringToFile(file,content, "UTF-8")
 }

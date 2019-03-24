@@ -2,16 +2,15 @@ package com.gomezrondon.accountstatementreader
 
 import com.gomezrondon.accountstatementreader.repository.CustomerRepository
 import com.gomezrondon.accountstatementreader.service.*
-
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import java.io.File
-import org.apache.commons.io.FileUtils
 
 
 @SpringBootApplication
-class Application(val process:ProcessService, val repository: CustomerRepository): CommandLineRunner {
+class Application(val process:ProcessService,val repository: CustomerRepository): CommandLineRunner {
+
+
 
 	override fun run(vararg args: String?) {
 		val option: String? = args[0]

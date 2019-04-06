@@ -193,9 +193,12 @@ fun String.formatLocalDateTime():LocalDateTime{
 }
 
 fun LocalDateTime.formatFullDateTime():String{
-    return this.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm:ss"))
+    return this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 }
 
+fun LocalDateTime.formatShortDateTime():String{
+    return this.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+}
 
 fun convertToJson(objet:Any):String{
     val gson = GsonBuilder().setPrettyPrinting().create() // for pretty print feature

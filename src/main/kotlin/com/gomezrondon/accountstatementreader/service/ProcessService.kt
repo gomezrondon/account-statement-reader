@@ -3,7 +3,10 @@ package com.gomezrondon.accountstatementreader.service
 import com.gomezrondon.accountstatementreader.repository.CustomerRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.time.LocalDateTime
+import kotlin.reflect.KMutableProperty1
 
 
 @Service
@@ -13,11 +16,94 @@ class ProcessService(val loadFileService: LoadFileService, val repository: Custo
 
     fun processTotalCuenta(){
         val findAll = repository.findAll()
-        println("fecha, total en cuentas")
 
         findAll.sortBy ({selector(it)})
-        findAll.forEach { println(it.creationDate.formatFullDateTime()) }
+
+        val printList:MutableList<String> = mutableListOf<String>()
+       
+        printList.add("fecha|totalCuentas|Dif. total cuentas|totalTDC|Dif. total TDC|Prestamo|Dif. Prestamo")
+    
+        var difference:Double=0.0
+        var index :Int=1;
+        val df = DecimalFormat("#.###")
+        df.roundingMode = RoundingMode.CEILING
+        for (it in findAll) {
+            val val1 = it.creationDate.formatShortDateTime()
+
+            difference= if(difference.equals(0.0)){
+                 it.totalCuentas
+            }else{
+                 it.totalCuentas.minus(difference)
+            }
+
+            val val2 = convertDecimalSystem(df, difference)
+            val val3=it.totalCuentas.toString().replace(".", ",")
+
+            difference = it.totalCuentas
+            printList.add("$val1|$val3|$val2")
+        }
+
+        difference=0.0
+        index=1
+        for (it in findAll) {
+            difference= if(difference.equals(0.0)){
+                it.totalTDC
+            }else{
+                it.totalTDC.minus(difference)
+            }
+
+            val val2 = convertDecimalSystem(df, difference)
+            val val3=it.totalTDC.toString().replace(".", ",")
+
+            difference = it.totalTDC
+
+            val line = printList.get(index)
+            printList.set(index,"$line|$val3|$val2")
+            index++
+        }
+
+        difference=0.0
+        index=1
+        for (it in findAll) {
+            difference= if(difference.equals(0.0)){
+                it.totalPrestamo
+            }else{
+                it.totalPrestamo.minus(difference)
+            }
+
+            val val2 = convertDecimalSystem(df, difference)
+            val val3=it.totalPrestamo.toString().replace(".", ",")
+
+            difference = it.totalPrestamo
+
+            val line = printList.get(index)
+            printList.set(index,"$line|$val3|$val2")
+            index++
+        }
+
+        //calculo de totales de totales
+        var transform: KMutableProperty1<Consolidado, Double> = Consolidado::totalCuentas
+        val val2 = totalDifference(findAll,transform, difference, df)
+        transform = Consolidado::totalTDC
+        val val3 = totalDifference(findAll,transform, difference, df)
+        transform = Consolidado::totalPrestamo
+        val val4 = totalDifference(findAll,transform, difference, df)
+
+        printList.forEach { println(it) }
+        println("Total Dif|$val2||$val3||$val4")
     }
+
+    private fun totalDifference(findAll: List<Consolidado>, transform: KMutableProperty1<Consolidado, Double>, difference: Double, df: DecimalFormat): String {
+        var difference1 = difference
+        val firstTotalCuentas = findAll.map(transform).first()
+        val lastTotalCuentas = findAll.map(transform).last()
+        difference1 = firstTotalCuentas.minus(lastTotalCuentas)
+        val val2 = convertDecimalSystem(df, difference1)
+        return val2
+    }
+
+    private fun convertDecimalSystem(df: DecimalFormat, diffTotalCuenta: Double) =
+            df.format(diffTotalCuenta).replace(".", ",")
 
 
     fun insertOneElement(workingDirectory: String) {

@@ -3,10 +3,22 @@ package com.gomezrondon.accountstatementreader.service
 import com.gomezrondon.accountstatementreader.repository.CustomerRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import java.time.LocalDateTime
 
 
 @Service
 class ProcessService(val loadFileService: LoadFileService, val repository: CustomerRepository) {
+
+    fun selector(p: Consolidado): LocalDateTime = p.creationDate
+
+    fun processTotalCuenta(){
+        val findAll = repository.findAll()
+        println("fecha, total en cuentas")
+
+        findAll.sortBy ({selector(it)})
+        findAll.forEach { println(it.creationDate.formatFullDateTime()) }
+    }
+
 
     fun insertOneElement(workingDirectory: String) {
 
@@ -72,6 +84,9 @@ class ProcessService(val loadFileService: LoadFileService, val repository: Custo
     fun deleteOneById(id: String) {
         repository.deleteById(id)
     }
+
+
+
 
 
 }

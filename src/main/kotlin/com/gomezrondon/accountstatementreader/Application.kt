@@ -22,6 +22,7 @@ class Application(val process:ProcessService,val repository: CustomerRepository)
 			"4" -> getMD5HashId(args[1]!!) // date in string format dd/MM/yyyy HH:mm:ss
 			"5" -> process.deleteOneById(args[1]!!) //aa5ff475e0109de3121f0c91c5fa9a4d
 			"6" -> convertToUTF8Encoding(args[1]!!)
+            "7" -> process.processTotalCuenta()
 			else -> println("<< No option was selected >>")
 		}
 	}

@@ -13,13 +13,14 @@ import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
 @Document(collection = "consolidados")
 data class Consolidado(@Id var id:String = "",
 
-        var creationDate: LocalDate= LocalDate.now()
+        var creationDate: LocalDateTime= LocalDateTime.now()
                        ,@Indexed(unique = true) var strDate:String=""
                        , var listaDeCuentas: MutableList<Cuenta> = mutableListOf<Cuenta>()
                         , var totalCuentas:Double = 0.0
@@ -66,7 +67,8 @@ fun getFileDate(BlockList:List<String>, consolidado:Consolidado): Consolidado{
             .map {
                 consolidado.id = it.trim().md5()
                 consolidado.strDate = it.trim()
-                val ldt = it.substring(0, 10).formatLocalDateTime()
+                val replace = it.replace("60", "59")
+                val ldt = replace.formatLocalDateTime()
                 consolidado.creationDate = ldt
 
             }
@@ -183,9 +185,17 @@ fun getBlock(block: List<Flux<String>>, index: Int): List<String>? {
 }
 
 
-fun String.formatLocalDateTime():LocalDate{
+fun String.formatLocalDate():LocalDate{
     return LocalDate.parse(this, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
 }
+fun String.formatLocalDateTime():LocalDateTime{
+    return LocalDateTime.parse(this, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))
+}
+
+fun LocalDateTime.formatFullDateTime():String{
+    return this.format(DateTimeFormatter.ofPattern("yyyy-mm-dd HH:mm:ss"))
+}
+
 
 fun convertToJson(objet:Any):String{
     val gson = GsonBuilder().setPrettyPrinting().create() // for pretty print feature
